@@ -102,10 +102,11 @@ var initiateAntennas = (function () {
     //show cloudy background method
     //show trees method
     
-    return function (initialNoOfAntennas, width, height, baseElement) {
+    return function (initialNoOfAntennas, width, height, baseElement, antennaSize) {
         antennaCount = initialNoOfAntennas;
         boardWidth = width;
         boardHeight = height;
+        antennaSize = antennaSize;
         drawAntennas(baseElement);
         //moveAntennas();
         setInterval(moveAntennas, 100);

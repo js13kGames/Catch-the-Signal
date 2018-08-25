@@ -1,9 +1,10 @@
 var gameboard = document.getElementById("gameboard"),
     antennaCount = 0,
     allAntennas,
-    initialNoOfAntennas = 2,
-    gameBoardWidth = 900,
-    gameBoardHeight = 500;
+    initialNoOfAntennas = 9,
+    gameBoardWidth = 700,
+    gameBoardHeight = 500,
+    antennaSize = 35;
 
 function initiateGameBoard() {
     document.getElementById("gameboard").style.width = gameBoardWidth + "px";
@@ -12,13 +13,10 @@ function initiateGameBoard() {
 
 function playGame(level) {
     initiateGameBoard();
-    //get all antennas object
-    //get player object
-    //determine collision
     //update score
     //update load line
     //speed up as per the level
-    allAntennas = initiateAntennas(initialNoOfAntennas, gameBoardWidth, gameBoardHeight, document.getElementById("playboard"));
+    allAntennas = initiateAntennas(initialNoOfAntennas, gameBoardWidth, gameBoardHeight, document.getElementById("playboard"), antennaSize);
     initiatePlayer(allAntennas, document.getElementById("playboard"));
     //showBufferLine();
 }

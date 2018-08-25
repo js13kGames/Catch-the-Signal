@@ -8,7 +8,7 @@ var initiatePlayer = (function() {
         checkProgress = null;
     
     function stopCheckingProgress() {
-        checkProgress = null;
+        clearInterval(checkProgress);
     }
     
     function setProgressBar(inRange) {
@@ -16,17 +16,17 @@ var initiatePlayer = (function() {
             redlineWidth = parseInt(redLine.style.width);
         if(inRange) {
             if(!greyLine.style.width) {
-                greyLine.style.width = "15px";
+                greyLine.style.width = "35px";
             }
             greyLine.style.width = greylineWidth + 10 + "px";
         } else {
             if(!redLine.style.width) {
                 redLine.style.width = "0px";
             }
-            redLine.style.width = redlineWidth + 1 + "px";
+            redLine.style.width = redlineWidth + 2 + "px";
         }
-        if(redlineWidth >= greylineWidth - 5) {
-            //alert("You lost! Refresh page to play again");
+        if(redlineWidth >= greylineWidth + 5) {
+            alert("You lost! Refresh page to play again");
             stopCheckingProgress();
         }
         if(redlineWidth/gameboard.getClientRects()[0].width > 0.75 || greylineWidth/gameboard.getClientRects()[0].width > 0.75) {
@@ -58,7 +58,6 @@ var initiatePlayer = (function() {
     }
     var checkCnt = 0;
     function isMarioInRange() {
-        document.getElementById("checking").innerHTML = "Checking..." + checkCnt++;
         var marioInRange = false,
             marioTopleft = marioPosition - 25 - gameboard.getClientRects()[0].x;
         for(var antennaIndex in allAntennas) {

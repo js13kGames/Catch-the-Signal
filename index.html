@@ -1,38 +1,6 @@
 <html>
     <head>
-        <style>
-            .gameboard {
-                background-color: lightgray;
-                margin: 0 25%;
-            }
-            .playboard {
-                width: 100%;
-            }
-            .loading-line {
-                position: relative;
-                height: 15px;
-                z-index: 1;
-                width: 100%;
-                background-color: darkgray;
-            }
-            .red-line {
-                position: absolute;
-                background-color: red;
-                height: 15px;
-                z-index: 3;
-            }
-            .grey-line {
-                position: absolute;
-                background-color: gray;
-                height: 15px;
-                z-index: 2;
-            }
-            #data-logs {
-                position: fixed;
-                top: 0;
-                left: 0;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="main.css">
     </head>
     <body>
         <div id="gameboard" class="gameboard">
@@ -42,10 +10,7 @@
                 <div class="grey-line" id="grey-line"></div>
             </div>
         </div>
-        <div id="checking"></div>
-        <div id="data-logs"></div>
         <div id="import-files">
-            <script src="loadingline.js"></script>
             <script src="player.js"></script>
             <script src="antennas.js"></script>
             <script src="main.js"></script>
