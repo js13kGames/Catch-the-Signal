@@ -33,6 +33,7 @@ var initiatePlayer = (function() {
             redLine.style.width = redlineWidth/2 + "px";
             greyLine.style.width = greylineWidth/2 + "px";
             //stepup the level
+            levelUp(1);
         }
     }
     

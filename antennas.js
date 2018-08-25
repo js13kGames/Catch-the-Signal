@@ -4,7 +4,24 @@ var initiateAntennas = (function () {
         antennaSize = 35,
         allAntennas = [],
         boardWidth = 500,
-        boardHeight = 300;
+        boardHeight = 300,
+        antennaInterval = 100,
+        antennaMovement,
+        gameboard;
+    
+    window.levelUp = function(changeInSpeed) {
+        //change in antenna speed
+        clearInterval(antennaMovement);
+        antennaInterval -= changeInSpeed;
+        setInterval(moveAntennas, antennaInterval);
+        
+        //remove an antenna
+        if(allAntennas.length > 2) {
+            gameboard.removeChild(allAntennas[allAntennas.length-1].antennaElement);
+            gameboard.removeChild(allAntennas[allAntennas.length-1].rangeElem);
+            allAntennas.pop();
+        }        
+    }
     
     function Antenna() {
         this.antennaElement = document.createElement("canvas");
@@ -35,7 +52,7 @@ var initiateAntennas = (function () {
     
     Antenna.prototype.setAntennaPositions = function () {
         if (!this.x) {
-            this.x = Math.random() * (boardWidth - antennaSize);
+            this.x = Math.random() * (boardWidth - antennaSize - 20);
             this.range.x1 = this.x - antennaSize/2;
             this.range.x2 = this.x + 3*antennaSize/2;
         }
@@ -46,7 +63,7 @@ var initiateAntennas = (function () {
         }
     };
         
-    function drawAntennas (baseElement) {
+    function drawAntennas () {
         var i = 0,
             antenna;
         for (i = 0; i < antennaCount; i++) {
@@ -57,7 +74,7 @@ var initiateAntennas = (function () {
             antenna.antennaElement.style.top = antenna.y + "px";
             antenna.antennaElement.style.marginLeft = "25%";
             allAntennas.push(antenna);
-            baseElement.appendChild(antenna.antennaElement);
+            gameboard.appendChild(antenna.antennaElement);
         }
     }
     
@@ -80,7 +97,7 @@ var initiateAntennas = (function () {
             var newTopPosition = parseFloat(antenna.antennaElement.style.top) - 25;
             if (newTopPosition < 0) {
                 antenna.y = boardHeight - antennaSize;
-                antenna.x = Math.random() * (boardWidth - antennaSize);
+                antenna.x = Math.random() * (boardWidth - antennaSize - 20);
                 antenna.antennaElement.style.top = antenna.y + "px";
                 antenna.antennaElement.style.left = antenna.x + "px";
                 antenna.range.x1 = antenna.x - antennaSize/2;
@@ -107,9 +124,10 @@ var initiateAntennas = (function () {
         boardWidth = width;
         boardHeight = height;
         antennaSize = antennaSize;
-        drawAntennas(baseElement);
+        gameboard = baseElement;
+        drawAntennas();
         //moveAntennas();
-        setInterval(moveAntennas, 100);
+        antennaMovement = setInterval(moveAntennas, antennaInterval);
         return allAntennas;
     };
 }());

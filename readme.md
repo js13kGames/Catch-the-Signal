@@ -26,3 +26,10 @@ To Do:
 11. write code in the form of reusable library
 12. score counter
 13. 
+-----------------------------------------------------------------------------------
+Tasks:
+
+1. Level up
+2. Score display
+3. Make it fancier
+4. Testing
