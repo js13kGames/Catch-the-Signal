@@ -5,10 +5,12 @@ var initiateAntennas = (function () {
         allAntennas = [],
         boardWidth = 500,
         boardHeight = 300,
-        antennaInterval = 100,
+        antennaInterval = 200,
         antennaMovement,
         gameboard,
-        signalFactor = 1;
+        signalFactor = 1,
+        maxSignalFactor = 4,
+        antennaShift = 25;
     
     window.levelUp = function(changeInSpeed) {
         //change in antenna speed
@@ -22,7 +24,7 @@ var initiateAntennas = (function () {
             gameboard.removeChild(allAntennas[allAntennas.length-1].antennaElement);
             gameboard.removeChild(allAntennas[allAntennas.length-1].rangeElem);
             allAntennas.pop();
-        }        
+        }
     }
     
     function Antenna() {
@@ -81,23 +83,34 @@ var initiateAntennas = (function () {
     }
     
     function drawRangeCircles(antenna) {
+        if(antenna.prevRangeElem) {
+            gameboard.removeChild(antenna.prevRangeElem);
+        }
+        antenna.prevRangeElem = antenna.rangeElem;
+        antenna.prevRangeElem.style.borderLeft = "1px dotted red";
+        antenna.prevRangeElem.style.borderRight = "1px dotted red";
+        antenna.prevRangeElem.style.top = parseFloat(antenna.prevRangeElem.style.top) - antennaShift + "px";
+        antenna.rangeElem = antenna.rangeElem.cloneNode(true);
         antenna.rangeElem.style.position = "absolute";
-        antenna.rangeElem.style.width = (antenna.range.x2 - antenna.range.x1)/signalFactor;
-        antenna.rangeElem.style.height = (antenna.range.y2 - antenna.range.y1)/signalFactor;
-        antenna.rangeElem.style.top = antenna.range.y1 + (signalFactor-1)*parseInt(antenna.rangeElem.style.height)/4 + "px";
-        antenna.rangeElem.style.left = antenna.range.x1 + (signalFactor-1)*parseInt(antenna.rangeElem.style.width)/4 + "px";
-        antenna.rangeElem.style.border = "2px solid red";
+        antenna.rangeElem.style.width = (antenna.range.x2 - antenna.range.x1)*(maxSignalFactor-signalFactor+1)/maxSignalFactor;
+        antenna.rangeElem.style.height = (antenna.range.y2 - antenna.range.y1)*(maxSignalFactor-signalFactor+1)/maxSignalFactor;
+        antenna.rangeElem.style.top = antenna.range.y1 + (signalFactor-1)*parseFloat(antenna.rangeElem.style.height)/(2*(maxSignalFactor-signalFactor+1)) + "px";
+        antenna.rangeElem.style.left = antenna.range.x1 + (signalFactor-1)*parseFloat(antenna.rangeElem.style.width)/(2*(maxSignalFactor-signalFactor+1)) + "px";
+        console.log("w: " + antenna.rangeElem.style.width + "top: " + antenna.rangeElem.style.top + "left: " + antenna.rangeElem.style.left);
+        antenna.rangeElem.style.borderLeft = "2px dotted red";
+        antenna.rangeElem.style.borderRight = "2px dotted red";
         antenna.rangeElem.style.marginLeft = "25%";
         antenna.rangeElem.style.borderRadius = "50%";
         gameboard.appendChild(antenna.rangeElem);
+        gameboard.appendChild(antenna.prevRangeElem);
     }
     
     function moveAntennas() {
         var i = 0;
-        signalFactor = (signalFactor%2) + 1;
+        
         for(i = 0; i < allAntennas.length; i++) {
             var antenna = allAntennas[i];
-            var newTopPosition = parseFloat(antenna.antennaElement.style.top) - 25;
+            var newTopPosition = parseFloat(antenna.antennaElement.style.top) - antennaShift;
             if (newTopPosition < 0) {
                 antenna.y = boardHeight - antennaSize;
                 antenna.x = Math.random() * (boardWidth - antennaSize - 20);
@@ -112,6 +125,7 @@ var initiateAntennas = (function () {
             antenna.range.y1 = antenna.y - antennaSize/2;
             antenna.range.y2 = antenna.y + 3*antennaSize/2;
             drawRangeCircles(antenna);
+            signalFactor = (signalFactor%maxSignalFactor) + 1;
         }
     }
     
