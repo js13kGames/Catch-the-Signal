@@ -7,12 +7,14 @@ var initiateAntennas = (function () {
         boardHeight = 300,
         antennaInterval = 100,
         antennaMovement,
-        gameboard;
+        gameboard,
+        signalFactor = 1;
     
     window.levelUp = function(changeInSpeed) {
         //change in antenna speed
         clearInterval(antennaMovement);
         antennaInterval -= changeInSpeed;
+        antennaSize--;
         setInterval(moveAntennas, antennaInterval);
         
         //remove an antenna
@@ -80,10 +82,10 @@ var initiateAntennas = (function () {
     
     function drawRangeCircles(antenna) {
         antenna.rangeElem.style.position = "absolute";
-        antenna.rangeElem.style.top = antenna.range.y1;
-        antenna.rangeElem.style.left = antenna.range.x1;
-        antenna.rangeElem.style.width = antenna.range.x2 - antenna.range.x1;
-        antenna.rangeElem.style.height = antenna.range.y2 - antenna.range.y1;
+        antenna.rangeElem.style.width = (antenna.range.x2 - antenna.range.x1)/signalFactor;
+        antenna.rangeElem.style.height = (antenna.range.y2 - antenna.range.y1)/signalFactor;
+        antenna.rangeElem.style.top = antenna.range.y1 + (signalFactor-1)*parseInt(antenna.rangeElem.style.height)/4 + "px";
+        antenna.rangeElem.style.left = antenna.range.x1 + (signalFactor-1)*parseInt(antenna.rangeElem.style.width)/4 + "px";
         antenna.rangeElem.style.border = "2px solid red";
         antenna.rangeElem.style.marginLeft = "25%";
         antenna.rangeElem.style.borderRadius = "50%";
@@ -92,6 +94,7 @@ var initiateAntennas = (function () {
     
     function moveAntennas() {
         var i = 0;
+        signalFactor = (signalFactor%2) + 1;
         for(i = 0; i < allAntennas.length; i++) {
             var antenna = allAntennas[i];
             var newTopPosition = parseFloat(antenna.antennaElement.style.top) - 25;

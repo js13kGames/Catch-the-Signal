@@ -5,7 +5,8 @@ var initiatePlayer = (function() {
         greyLine = document.getElementById("grey-line"),
         redLine = document.getElementById("red-line"),
         marioPosition = 0,
-        checkProgress = null;
+        checkProgress = null,
+        score = 0;
     
     function stopCheckingProgress() {
         clearInterval(checkProgress);
@@ -34,7 +35,9 @@ var initiatePlayer = (function() {
             greyLine.style.width = greylineWidth/2 + "px";
             //stepup the level
             levelUp(1);
+            score += 100;
         }
+        document.getElementById("scoreboard").innerHTML = score;
     }
     
     function createMario() {
@@ -65,6 +68,7 @@ var initiatePlayer = (function() {
             var antenna = allAntennas[antennaIndex];
             if(antenna.range.y2 >= 25 && antenna.range.y1 <= 75 && marioTopleft >= (antenna.range.x1 - 50) && marioTopleft <= antenna.range.x2) {
                 marioInRange = true;
+                score++;
                 break;
             }
                
