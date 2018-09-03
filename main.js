@@ -1,7 +1,7 @@
 var gameboard = document.getElementById("gameboard"),
     antennaCount = 0,
     allAntennas,
-    initialNoOfAntennas = 7,
+    initialNoOfAntennas = 1,
     gameBoardWidth = 700,
     gameBoardHeight = 500,
     antennaSize = 35;
