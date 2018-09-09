@@ -7,8 +7,8 @@ var gamebordDim = {
         width: 50
     },
     antennaDim = {
-        width: 6,
-        height: 24
+        width: 12,
+        height: 48
     },
     ymotion = gamebordDim.height - playerDim.height,
     x = 0,
@@ -17,7 +17,12 @@ var gamebordDim = {
         x: gamebordDim.width
     },
     radius = motionCenter.x - x,
-    noOfAntennas = 5;
+    noOfAntennas = 3,
+    characterSize = 100,
+    characterObject,
+    currentCharacterPosition = {},
+    characterSwingLimit = 15,
+    characterDirection = 1;
 
 function initializeSizes() {
     var gameboard = document.getElementById("gameboard");
@@ -28,6 +33,16 @@ function initializeSizes() {
     var player = document.getElementById("player");
     player.style.width = playerDim.width + "px";
     player.style.height = playerDim.height + "px";
+    characterObject = createCharacter();
+    player.appendChild(characterObject);
+    function keepCharacterInMotion() {
+        var currentShift = currentCharacterPosition.y - parseFloat(characterObject.style.top);
+        if(Math.abs(currentShift) > characterSwingLimit) {
+            characterDirection *= -1;
+        }
+        characterObject.style.top = parseFloat(characterObject.style.top) - characterDirection + "px";
+    }
+    setInterval(keepCharacterInMotion, 20);
 }
 
 function shiftPlayer(x, y) {

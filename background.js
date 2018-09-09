@@ -15,7 +15,9 @@ var initializeBackground = (function () {
             y: boardHeight
         },
         maxSignalFactor = 3,//should be a number lesser than noOfAntennas
-        signalFactor = 1;
+        signalFactor = 1,
+        land = null,
+        earthRadius;
         
     function Antenna() {
         this.antennaWrapper = document.createElement("div");
@@ -67,8 +69,9 @@ var initializeBackground = (function () {
             antenna;
         for (i = 0; i < antennaCount; i++) {
             antenna = new Antenna();
-            antenna.x = Math.random() * boardWidth;
-            antenna.y = Math.random() * (boardHeight - antennaSizes.height);
+            antenna.x = Math.random() * (boardWidth - antennaSizes.width*6);
+            antenna.y = Math.random() * (boardHeight - antennaSizes.height*3);
+            antenna.radius = antenna.x;
             antenna.antennaWrapper.style.position = "absolute";
             antenna.antennaWrapper.style.left = antenna.x + "px";
             antenna.antennaWrapper.style.top = antenna.y + "px";
@@ -86,9 +89,9 @@ var initializeBackground = (function () {
         antenna.rangeElem.style.width = rangeRadius + "px";
         antenna.rangeElem.style.height = rangeRadius + "px";
         antenna.rangeElem.style.position = "absolute";
-        antenna.rangeElem.style.borderWidth = "0px 4px";
+        antenna.rangeElem.style.borderWidth = "0px 2px";
         antenna.rangeElem.style.borderColor = "red";
-        antenna.rangeElem.style.borderStyle = "solid";
+        antenna.rangeElem.style.borderStyle = "dotted";
         antenna.rangeElem.style.borderRadius = "50%";
         antenna.rangeElem.style.left = antenna.rangeCenter[0] - rangeRadius/2 + "px";
         antenna.rangeElem.style.top = antenna.rangeCenter[1] - rangeRadius/2 + "px";
@@ -97,16 +100,23 @@ var initializeBackground = (function () {
     
     function getCircularMotion(antenna) {
         var graphX = antenna.x;
-        return gamebordDim.height - Math.sqrt(antenna.radius * antenna.radius - graphX * graphX);
+        return gamebordDim.height - Math.sqrt(antenna.radius * antenna.radius - graphX * graphX) - antennaSizes.height*3;
     }
     
     function moveAntennas() {
         var i = 0;
         for(i = 0; i < allAntennas.length; i++) {
-            var antenna = allAntennas[i];
+            var antenna = allAntennas[i],
+                antennaWd = parseFloat(antenna.antennaElement.style.width),
+                antennaHt = parseFloat(antenna.antennaElement.style.height);
+            antenna.antennaElement.style.width = antennaWd - 0.3 + "px";
+            antenna.antennaElement.style.height = antennaHt - 1 + "px";
             var newLeftPosition = parseFloat(antenna.antennaWrapper.style.left) - antennaShift;
-            if (newLeftPosition < antennaSizes.width) {
-                antenna.y = boardHeight - antennaSizes.height - 10;
+            if (newLeftPosition < antennaSizes.width*6) {
+                antenna.antennaElement.style.width = antennaSizes.width * 6 + "px";
+                antenna.antennaElement.style.height = antennaSizes.height * 3 + "px";
+                
+                antenna.y = boardHeight - antennaSizes.height*3;
                 antenna.x = Math.random() * (boardWidth - antennaSizes.width - 20);
                 antenna.radius = antenna.x;
                 antenna.pathRadius = Math.abs(antennaMotionCenter.x - antenna.x);
@@ -130,14 +140,58 @@ var initializeBackground = (function () {
         }
     }
     
+    function showTrees() {
+        var landElem = document.createElement("canvas"),
+            landContext = landElem.getContext("2d");
+        landElem.style.width = "50px";
+        landElem.style.height = "50px";
+        landElem.width = "50";
+        landElem.height = "50";
+        landElem.style.position = "absolute";
+        landElem.style.top = "50px";
+        landElem.style.left = "50px";
+        landElem.setAttribute("id", "earth-element");
+        
+        landContext.beginPath();
+        landContext.moveTo(0,0);
+        for(var pt = 0; pt < 25; pt++) {
+            landContext.lineTo(pt*6,Math.random()*25);
+        }
+        for(pt = 0; pt < 25; pt++) {
+            landContext.lineTo(150-pt*(150/25),125+Math.random()*125);
+        }
+        landContext.closePath();
+        landContext.fillStyle = "green";
+        landContext.fill();
+        
+        gameboard.appendChild(landElem);
+        return landElem;
+    }
+    
+    function moveTrees() {
+        //land.style.earthRadius
+        var x = parseFloat(land.style.left) - antennaShift,
+            y = Math.sqrt(earthRadius*earthRadius - x*x);
+        if(x < 0) {
+            y = 0;
+            x = Math.sqrt(earthRadius*earthRadius - y*y);
+        }
+        
+        land.style.top = boardHeight - y + "px";
+        land.style.left = x + "px";
+    }
+    
     return function (initialNoOfAntennas, width, height, antennaDim) {
         antennaCount = initialNoOfAntennas || 5;
         boardWidth = width;
         boardHeight = height;
+        earthRadius = boardWidth - 50;
         antennaSizes = antennaDim;
         gameboard = document.getElementById("gameboard");
         drawAntennas();
         antennaMovement = setInterval(moveAntennas, antennaInterval);
+        //land = showTrees();
+        //setInterval(moveTrees, antennaInterval);
         return allAntennas;
     };
 }());
