@@ -17,7 +17,25 @@ var initializeBackground = (function () {
         maxSignalFactor = 3,//should be a number lesser than noOfAntennas
         signalFactor = 1,
         land = null,
-        earthRadius;
+        earthRadius,
+        maxRangeRadius;
+    
+    window.levelUp = function(changeInSpeed) {
+        var gameboard = document.getElementById("gameboard");
+        
+        //change in antenna speed
+        clearInterval(antennaMovement);
+        antennaInterval -= changeInSpeed;
+        antennaSizes.height--;
+        maxRangeRadius--;
+        setInterval(moveAntennas, antennaInterval);
+        
+        //remove an antenna
+        if(allAntennas.length > 2) {
+            gameboard.removeChild(allAntennas[allAntennas.length-1].antennaWrapper);
+            allAntennas.pop();
+        }
+    };
         
     function Antenna() {
         this.antennaWrapper = document.createElement("div");
@@ -60,8 +78,7 @@ var initializeBackground = (function () {
         this.antennaWrapper.appendChild(this.antennaElement);
                 
         this.rangeElem = document.createElement("div");
-        this.maxRangeRadius = antennaSizes.width * 15;
-        this.rangeRadius = this.maxRangeRadius;
+        this.rangeRadius = maxRangeRadius;
     }
             
     function drawAntennas () {
@@ -84,7 +101,7 @@ var initializeBackground = (function () {
     var step = 1;
     
     function drawRangeCircles(antenna) {
-        antenna.rangeRadius = antenna.maxRangeRadius/step;
+        antenna.rangeRadius = maxRangeRadius/step;
         var rangeRadius = antenna.rangeRadius;
         antenna.rangeElem.style.width = rangeRadius + "px";
         antenna.rangeElem.style.height = rangeRadius + "px";
@@ -128,9 +145,10 @@ var initializeBackground = (function () {
                 antenna.y = getCircularMotion(antenna);
                 antenna.antennaWrapper.style.top = antenna.y + "px";
             }
+            
             //change radius of range circles
             step = step % 7 + 1;
-            antenna.rangeRadius = antenna.maxRangeRadius/step;
+            antenna.rangeRadius = maxRangeRadius/step;
             var rangeRadius = antenna.rangeRadius;
             antenna.rangeElem.style.width = rangeRadius + "px";
             antenna.rangeElem.style.height = rangeRadius + "px";
@@ -187,6 +205,7 @@ var initializeBackground = (function () {
         boardHeight = height;
         earthRadius = boardWidth - 50;
         antennaSizes = antennaDim;
+        maxRangeRadius = antennaSizes.width * 10;
         gameboard = document.getElementById("gameboard");
         drawAntennas();
         antennaMovement = setInterval(moveAntennas, antennaInterval);

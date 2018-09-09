@@ -15,16 +15,41 @@
                 height: 50px;
                 position: absolute;
             }
+            .loading-line {
+                position: absolute;
+                height: 15px;
+                z-index: 1;
+                width: 100%;
+                background-color: darkgray;
+                bottom: 0;
+            }
+            .red-line {
+                position: absolute;
+                background-color: red;
+                height: 15px;
+                z-index: 3;
+            }
+            .grey-line {
+                position: absolute;
+                background-color: gray;
+                height: 15px;
+                z-index: 2;
+            }
         </style>
     </head>
     <body>
         <div id="gameboard" onmousemove="grabSignal(event)">
             <div id="player"></div>
+            <div class="loading-line">
+                <div class="red-line" id="red-line"></div>
+                <div class="grey-line" id="grey-line"></div>
+            </div>
         </div>
         <div id="libraries">
             <script src="createCharacter.js"></script>
             <script src="background.js"></script>
             <script src="app.js"></script>
+            <!--<script src="dist/game.js"></script>-->
         </div>
     </body>
 </html>

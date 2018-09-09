@@ -7,8 +7,8 @@ var gamebordDim = {
         width: 50
     },
     antennaDim = {
-        width: 12,
-        height: 48
+        width: 10,
+        height: 40
     },
     ymotion = gamebordDim.height - playerDim.height,
     x = 0,
@@ -17,12 +17,20 @@ var gamebordDim = {
         x: gamebordDim.width
     },
     radius = motionCenter.x - x,
-    noOfAntennas = 3,
+    noOfAntennas = 5,
     characterSize = 100,
     characterObject,
     currentCharacterPosition = {},
     characterSwingLimit = 15,
-    characterDirection = 1;
+    characterDirection = 1,
+    checkProgress,
+    allAntennas,
+    greyLine = document.getElementById("grey-line"),
+    redLine = document.getElementById("red-line");
+
+function stopCheckingProgress() {
+    clearInterval(checkProgress);
+}
 
 function initializeSizes() {
     var gameboard = document.getElementById("gameboard");
@@ -76,8 +84,61 @@ function movePlayer() {
     shiftPlayer(x, getCircularMotion(x));
 }
 
+function isPlayerInRange() {
+    var playerInRange = false,
+        playerRect = player.getClientRects()[0],
+        antennaRect = {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        };
+    for(var antennaIndex in allAntennas) {
+        var antenna = allAntennas[antennaIndex];
+        antennaRect = antenna.antennaWrapper.getClientRects()[0];
+        var xCoverage = playerRect.x > (antennaRect.x - playerRect.width) && playerRect.x < (antennaRect.x + antennaRect.width),
+            yConverage = playerRect.y > (antennaRect.y - playerRect.height) && playerRect.y < (antennaRect.y + antennaRect.height);
+        
+        if(xCoverage && yConverage) {
+            playerInRange = true;
+            break;
+        }
+    }
+    setProgressBar(playerInRange);
+}
+
+function setProgressBar(inRange) {
+    var greylineWidth = parseInt(greyLine.style.width),
+        redlineWidth = parseInt(redLine.style.width);
+    if(inRange) {
+        if(!greyLine.style.width) {
+            greyLine.style.width = "35px";
+        }
+        greyLine.style.width = greylineWidth + 25 + "px";
+    } else {
+        if(!redLine.style.width) {
+            redLine.style.width = "0px";
+        }
+        redLine.style.width = redlineWidth + 2 + "px";
+    }
+    if(redlineWidth >= greylineWidth + 5) {
+        alert("You lost! Refresh page to play again");
+        stopCheckingProgress();
+    }
+    if(redlineWidth/gameboard.getClientRects()[0].width > 0.75 || greylineWidth/gameboard.getClientRects()[0].width > 0.75) {
+        redLine.style.width = redlineWidth/2 + "px";
+        greyLine.style.width = greylineWidth/2 + "px";
+        //stepup the level
+        levelUp(1);
+        //score += 100;
+    }
+    //document.getElementById("scoreboard").innerHTML = score;
+}
+
 initializeSizes();
-initializeBackground(noOfAntennas, gamebordDim.width, gamebordDim.height, antennaDim);
+allAntennas = initializeBackground(noOfAntennas, gamebordDim.width, gamebordDim.height, antennaDim);
+setProgressBar(true);
+checkProgress = setInterval(isPlayerInRange, 100);
 
 function grabSignal(ev) {
     var relativePosition = ev.x - gameboard.getClientRects()[0].left;
