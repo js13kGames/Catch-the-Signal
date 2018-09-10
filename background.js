@@ -8,7 +8,7 @@ var initializeBackground = (function () {
         gameboard,
         antennaMovement,
         allAntennas = [],
-        antennaInterval = 100,
+        antennaInterval = 60,
         antennaShift = 4,
         antennaMotionCenter = {
             x: 0,
@@ -108,7 +108,7 @@ var initializeBackground = (function () {
         antenna.rangeElem.style.position = "absolute";
         antenna.rangeElem.style.borderWidth = "0px 2px";
         antenna.rangeElem.style.borderColor = "red";
-        antenna.rangeElem.style.borderStyle = "dotted";
+        antenna.rangeElem.style.borderStyle = "solid";
         antenna.rangeElem.style.borderRadius = "50%";
         antenna.rangeElem.style.left = antenna.rangeCenter[0] - rangeRadius/2 + "px";
         antenna.rangeElem.style.top = antenna.rangeCenter[1] - rangeRadius/2 + "px";

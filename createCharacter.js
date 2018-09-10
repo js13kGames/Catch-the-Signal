@@ -11,6 +11,7 @@ function createCharacter() {
     charStyle.position = "absolute";    
     charStyle.top = "25px";
     charStyle.left = "10px";
+    charStyle.zIndex = "99";
     //charStyle.backgroundColor = "pink";
     currentCharacterPosition.x = 10;
     currentCharacterPosition.y = 25;
@@ -37,12 +38,15 @@ function createCharacter() {
     charContext.lineTo(headX+headElongation, 0);
     charContext.arc(headX+headElongation,headY,headRadius,Math.PI*3/2,Math.PI/2);
     charContext.lineTo(headX, 2*headY);
+    charContext.fillStyle = "yellow";
     
     //dress
     charContext.lineTo(dressX, dressY);
     charContext.lineTo(dressX+2*headElongation, dressY-headElongation);
     charContext.lineTo(headX+headElongation,2*headY);
-    charContext.moveTo(dressX, dressY);    
+    charContext.moveTo(dressX, dressY);
+    
+    charContext.fill();
     
     //legs
     charContext.lineTo(dressX + legLength, legLength * dressBottomSlope + dressY);    

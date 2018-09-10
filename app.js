@@ -17,7 +17,7 @@ var gamebordDim = {
         x: gamebordDim.width
     },
     radius = motionCenter.x - x,
-    noOfAntennas = 5,
+    noOfAntennas = 6,
     characterSize = 100,
     characterObject,
     currentCharacterPosition = {},
@@ -26,7 +26,9 @@ var gamebordDim = {
     checkProgress,
     allAntennas,
     greyLine = document.getElementById("grey-line"),
-    redLine = document.getElementById("red-line");
+    redLine = document.getElementById("red-line"),
+    score = 0,
+    gameStarted = false;
 
 function stopCheckingProgress() {
     clearInterval(checkProgress);
@@ -57,13 +59,6 @@ function shiftPlayer(x, y) {
     var player = document.getElementById("player");
     player.style.left = x + "px";
     player.style.top = y + "px";
-    /*var traces = document.createElement("div");
-    traces.style.border = "2px solid darkgrey";
-    traces.style.position = "absolute";
-    traces.style.top = y + "px";
-    traces.style.left = x + "px";
-    var gameboard = document.getElementById("gameboard");
-    gameboard.appendChild(traces);*/
 }
 
 function getRandomPosition(range) {
@@ -112,17 +107,20 @@ function setProgressBar(inRange) {
         redlineWidth = parseInt(redLine.style.width);
     if(inRange) {
         if(!greyLine.style.width) {
-            greyLine.style.width = "35px";
+            greyLine.style.width = "85px";
         }
-        greyLine.style.width = greylineWidth + 25 + "px";
+        greyLine.style.width = greylineWidth + 10 + "px";
+        score++;
     } else {
         if(!redLine.style.width) {
             redLine.style.width = "0px";
         }
-        redLine.style.width = redlineWidth + 2 + "px";
+        redLine.style.width = redlineWidth + 4 + "px";
     }
     if(redlineWidth >= greylineWidth + 5) {
-        alert("You lost! Refresh page to play again");
+        var instruction = document.getElementById("instructions-board");
+        instruction.innerHTML = "You lost! Refresh page to play again";
+        instruction.style.display = "block";
         stopCheckingProgress();
     }
     if(redlineWidth/gameboard.getClientRects()[0].width > 0.75 || greylineWidth/gameboard.getClientRects()[0].width > 0.75) {
@@ -130,15 +128,23 @@ function setProgressBar(inRange) {
         greyLine.style.width = greylineWidth/2 + "px";
         //stepup the level
         levelUp(1);
-        //score += 100;
+        score += 100;
     }
-    //document.getElementById("scoreboard").innerHTML = score;
+    document.getElementById("scoreboard").innerHTML = score;
 }
 
 initializeSizes();
-allAntennas = initializeBackground(noOfAntennas, gamebordDim.width, gamebordDim.height, antennaDim);
-setProgressBar(true);
-checkProgress = setInterval(isPlayerInRange, 100);
+
+function startGame(){
+    if(!gameStarted) {
+        var instructions = document.getElementById("instructions-board");
+        instructions.style.display = "none";
+        allAntennas = initializeBackground(noOfAntennas, gamebordDim.width, gamebordDim.height, antennaDim);
+        setProgressBar(true);
+        checkProgress = setInterval(isPlayerInRange, 100);
+        gameStarted = true;
+    }
+}
 
 function grabSignal(ev) {
     var relativePosition = ev.x - gameboard.getClientRects()[0].left;
